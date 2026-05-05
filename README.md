@@ -9,12 +9,16 @@
 
 - **Secure Physical Pairing:** Connect with friends using dual-proximity verification. Pairing requires both **GPS Location** and **Bluetooth BLE** confirmation to ensure you are physically standing next to each other. Remote pairing via screenshots or photos is strictly blocked.
 - **UPI QR Forwarding:** Scan any UPI QR code and instantly forward it to a paired friend for payment.
+- **Transaction Localization:** Automatically captures GPS coordinates during payment requests. Friends can view the request location on a map to verify authenticity.
 - **Real-time Chat:** Built-in messaging system for every payment request to clarify details and share confirmation.
 - **Two-Sided Confirmation:** Transparent payment tracking where both the requester and the payer must confirm the transaction.
+- **SMS Alert Integration:** Optional SMS notifications for new payment requests (requires Blaze plan backend).
 - **Help & Support:** Built-in searchable FAQ and help center to guide users through pairing, payments, and security features.
 - **Anti-Fraud Protections:** 
   - **Screen Security:** Screenshots and screen recordings are disabled on sensitive payment and pairing screens.
   - **Lock Screen Privacy:** Transaction details are hidden from the device lock screen.
+  - **Device Fingerprinting:** Records device model and ID for every request to detect unauthorized account usage.
+  - **Anti-Spoofing:** Blocks mock location (Fake GPS) apps during pairing and payment requests.
   - **Account Control:** Secure profile management including verified email/phone updates and permanent account deletion options.
 - **Robust Security Flow:** Mandatory sequential verification (Email → Phone OTP) ensures every account is authentic before app access is granted.
 - **Adaptive Authentication:** Supports Biometrics (Fingerprint/Face) with a seamless fallback to PIN, Pattern, or Password for older devices.
@@ -23,19 +27,19 @@
 
 | Onboarding | Login | QR Pairing |
 |:---:|:---:|:---:|
-| <img src="art/screen_1.png" width="200"> | <img src="art/screen_2.png" width="200"> | <img src="art/screen_3.png" width="200"> |
+| <img src="art/screen_1.svg" width="200"> | <img src="art/screen_2.svg" width="200"> | <img src="art/screen_3.svg" width="200"> |
 
 | Dashboard | Payment Request | Chat |
 |:---:|:---:|:---:|
-| <img src="art/screen_4.png" width="200"> | <img src="art/screen_5.png" width="200"> | <img src="art/screen_6.png" width="200"> |
+| <img src="art/screen_4.svg" width="200"> | <img src="art/screen_5.svg" width="200"> | <img src="art/screen_6.svg" width="200"> |
 
-*(Note: Replace images in `art/` folder to update screenshots)*
+*(Note: Replace these template SVGs in the `art/` folder with actual screenshots to update the visual guide.)*
 
 ## 📥 Download APK
 
 You can download the latest stable version of the Pay4Me APK from the Releases section:
 
-[**Download Pay4Me v1.0.7 APK**](https://github.com/kirubas/pay4me/releases/latest)
+[**Download Pay4Me v1.0.8 APK**](https://github.com/kirubas/pay4me/releases/latest)
 
 ### Installation Steps:
 1. Download the `.apk` file.

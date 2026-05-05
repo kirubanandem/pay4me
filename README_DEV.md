@@ -9,6 +9,8 @@ Welcome to the **Pay4Me** developer guide. This document contains technical setu
 - **Target SDK:** 34 (Android 14)
 - **Architecture:** MVVM (Model-View-ViewModel) + Repository Pattern
 - **Threading:** ViewModel with LiveData, WorkManager for background tasks.
+- **Security Features:** Device metadata tracking, Mock location detection, Biometric/Credential authentication.
+- **Notifications:** Integrated FCM for background and localized system alerts for foreground events.
 
 ---
 
@@ -25,6 +27,13 @@ The app relies on Firebase for almost all backend functionality.
    - Deploy Firestore rules from `firebase/firestore.rules`.
    - Deploy RTDB rules from `firebase/database.rules.json`.
 7. **Indexes:** Deploy composite indexes using `firebase deploy --only firestore:indexes`.
+8. **Crashlytics:** Enable in Firebase Console. To receive email alerts, opt-in via "Alerts" settings in the Firebase Console dashboard.
+
+### 2. SMS Alerts (Blaze Plan)
+To enable SMS alerts for payment requests:
+1. Upgrade Firebase project to the **Blaze (Pay-as-you-go)** plan.
+2. Deploy a Cloud Function or Firebase Extension to listen for new documents in the `notifications` collection.
+3. Verify the recipient's `smsAlertsEnabled` field in their user profile before sending.
 
 ### 2. Cloudinary (Image Hosting)
 Used for profile photo uploads.
