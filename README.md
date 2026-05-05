@@ -39,7 +39,7 @@
 
 You can download the latest stable version of the Pay4Me APK from the Releases section:
 
-[**Download Pay4Me v1.0.8 APK**](https://github.com/kirubas/pay4me/releases/latest)
+[**Download Pay4Me v1.0.8 APK**](https://github.com/kirubanandem/pay4me/releases/download/Pay4Me-1_0_8/Pay4Me-V-1_0_8.apk)
 
 ### Installation Steps:
 1. Download the `.apk` file.
