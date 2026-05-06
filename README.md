@@ -10,18 +10,30 @@
 - **Secure Physical Pairing:** Connect with friends using dual-proximity verification. Pairing requires both **GPS Location** and **Bluetooth BLE** confirmation to ensure you are physically standing next to each other. Remote pairing via screenshots or photos is strictly blocked.
 - **UPI QR Forwarding:** Scan any UPI QR code and instantly forward it to a paired friend for payment.
 - **Transaction Localization:** Automatically captures GPS coordinates during payment requests. Friends can view the request location on a map to verify authenticity.
-- **Real-time Chat:** Built-in messaging system for every payment request to clarify details and share confirmation.
-- **Two-Sided Confirmation:** Transparent payment tracking where both the requester and the payer must confirm the transaction.
-- **SMS Alert Integration:** Optional SMS notifications for new payment requests (requires Blaze plan backend).
-- **Help & Support:** Built-in searchable FAQ and help center to guide users through pairing, payments, and security features.
+- **Real-time Chat & Communication:**
+  - Private chat room for every payment request.
+  - **General Chat:** Start a conversation with any friend directly from their profile.
+  - **Typing Indicators:** See when your friend is actively composing a message.
+  - **Image Sharing:** Send photos directly in chat or **Share from other apps** (like UPI payment receipts) instantly into any active conversation.
+- **Two-Sided Confirmation:** Transparent payment tracking where both the requester and the payer must confirm the transaction. **New:** Verification warnings ensure users check bank balances before confirming.
+- **Smart Notifications:**
+  - **Urgent Priority Alerts:** Loud, high-visibility notifications for new payment requests.
+  - **Background Service:** Ensures instant request delivery even when the app is minimized.
+- **Troubleshooting Guide:** In-app help for managing battery optimizations and "missing notification" issues on specific device brands.
+- **Flexible Navigation:** No more forced interactions. Leave any request page at any time using standard navigation or the "Leave without responding" option.
+- **Help & Support Center:** Built-in searchable FAQ guide covering pairing, payments, and anti-fraud features.
+- **Direct Developer Support:** Contact the developer for bugs or technical concerns via **WhatsApp (+91 9092041238)** or **Email (kirubas102@gmail.com)**.
+- **Security Hardening (v1.2.0):** 
+  - **App Lock Integrity:** Prevents lock-screen bypass via notifications or shortcuts.
+  - **Ownership Validation:** Strict server-side checks ensure only participants can view request details.
+  - **Self-Healing Sessions:** Automatically restores sessions after biometric changes or storage resets.
 - **Anti-Fraud Protections:** 
   - **Screen Security:** Screenshots and screen recordings are disabled on sensitive payment and pairing screens.
   - **Lock Screen Privacy:** Transaction details are hidden from the device lock screen.
   - **Device Fingerprinting:** Records device model and ID for every request to detect unauthorized account usage.
   - **Anti-Spoofing:** Blocks mock location (Fake GPS) apps during pairing and payment requests.
-  - **Account Control:** Secure profile management including verified email/phone updates and permanent account deletion options.
-- **Robust Security Flow:** Mandatory sequential verification (Email → Phone OTP) ensures every account is authentic before app access is granted.
-- **Adaptive Authentication:** Supports Biometrics (Fingerprint/Face) with a seamless fallback to PIN, Pattern, or Password for older devices.
+- **Robust Verification:** Mandatory sequential verification (Email → Phone OTP with automatic +91 prefix) ensures every account is authentic.
+- **Adaptive Authentication:** Supports Biometrics (Fingerprint/Face) with a seamless fallback to PIN, Pattern, or Password.
 
 ## 📱 Screenshots
 
@@ -39,7 +51,7 @@
 
 You can download the latest stable version of the Pay4Me APK from the Releases section:
 
-[**Download Pay4Me v1.0.8 APK**](https://github.com/kirubanandem/pay4me/releases/download/Pay4Me-1_0_8/Pay4Me-V-1_0_8.apk)
+[**Download Pay4Me v1.0.8 APK**](https://github.com/kirubas/pay4me/releases/latest)
 
 ### Installation Steps:
 1. Download the `.apk` file.

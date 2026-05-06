@@ -3,14 +3,18 @@
 Welcome to the **Pay4Me** developer guide. This document contains technical setup instructions, architecture overview, and project structure details.
 
 ## Project Overview
+- **Version:** v1.2.0
 - **Package:** `com.kirubas.pay4me`
 - **Language:** Java (Android)
 - **Min SDK:** 24 (Android 7.0)
 - **Target SDK:** 34 (Android 14)
 - **Architecture:** MVVM (Model-View-ViewModel) + Repository Pattern
 - **Threading:** ViewModel with LiveData, WorkManager for background tasks.
-- **Security Features:** Device metadata tracking, Mock location detection, Biometric/Credential authentication.
-- **Notifications:** Integrated FCM for background and localized system alerts for foreground events.
+- **Security Features:** Device metadata tracking, Mock location detection, Biometric/Credential authentication, Secure session self-healing.
+- **API Standards:** Intent handling and Back navigation updated to modern Android 14 requirements (OnBackPressedDispatcher, type-safe getParcelableExtra).
+- **Trust-Based Tracking:** UI-level warnings implemented for "Mark as Paid" and "Confirm Receipt" actions to minimize coordination errors.
+- **Notifications:** Integrated FCM for background and specialized localized system alerts for foreground events.
+- **Developer Support:** WhatsApp (+91 9092041238), Email (kirubas102@gmail.com).
 
 ---
 
@@ -22,31 +26,34 @@ The app relies on Firebase for almost all backend functionality.
 2. **Android App:** Register `com.kirubas.pay4me` and download `google-services.json`.
 3. **Authentication:** Enable **Email/Password** and **Phone** providers.
 4. **Firestore:** Enable in Production mode (Region: `asia-south1`).
-5. **Realtime Database:** Enable for presence tracking (Region: `asia-southeast1`).
+5. **Realtime Database:** Enable for presence tracking. **IMPORTANT:** The app is hardcoded to use the Singapore region (`asia-southeast1`). Ensure your RTDB instance matches this or update `AppConstants.FIREBASE_RTDB_URL`.
 6. **Security Rules:** 
    - Deploy Firestore rules from `firebase/firestore.rules`.
    - Deploy RTDB rules from `firebase/database.rules.json`.
 7. **Indexes:** Deploy composite indexes using `firebase deploy --only firestore:indexes`.
-8. **Crashlytics:** Enable in Firebase Console. To receive email alerts, opt-in via "Alerts" settings in the Firebase Console dashboard.
 
-### 2. SMS Alerts (Blaze Plan)
-To enable SMS alerts for payment requests:
-1. Upgrade Firebase project to the **Blaze (Pay-as-you-go)** plan.
-2. Deploy a Cloud Function or Firebase Extension to listen for new documents in the `notifications` collection.
-3. Verify the recipient's `smsAlertsEnabled` field in their user profile before sending.
+### 2. High-Priority Push Alerts
+The app uses specialized notification channels for immediate attention:
+1. **Notification Channels:** Channels like `pay4me_urgent` and `pay4me_requests` are created with `IMPORTANCE_HIGH`.
+2. **Foreground/Minimized:** Handled by `NotificationListenerService`. It uses a persistent foreground notification with a `PendingIntent` to allow users to tap and open the app instantly.
+3. **True Background:** Handled by `Pay4MeMessagingService` (FCM).
 
-### 2. Cloudinary (Image Hosting)
-Used for profile photo uploads.
+### 3. External Image Sharing
+The app supports catching images shared from other apps (like UPI transaction receipts):
+1. **Manifest:** `MainActivity` is registered with an `<intent-filter>` for `android.intent.action.SEND` with mime-type `image/*`.
+2. **Handling:** `MainActivity.handleIntent()` extracts the `Uri`, allows the user to select an active request or a friend, and then uses `RequestDetailViewModel` logic to compress and upload the image.
+
+### 4. Cloudinary (Image Hosting)
+Used for profile photo and chat image uploads.
 1. Create an account at [Cloudinary](https://cloudinary.com).
 2. Obtain **Cloud Name**, **API Key**, and **API Secret**, and **upload_preset**.
 3. The app fetches these from Firebase RTDB (`appConfig/cloudinary`) or uses defaults in `AppConstants.java`.
-4. Ensure an "Unsigned Upload Preset" is created in Cloudinary settings.
 
-### 3. Assets & Resources
+### 5. Assets & Resources
 Manual steps required for a fresh build:
 - **Fonts (`res/font/`):** Add `poppins_semibold.ttf`, `inter_regular.ttf`, and `roboto_mono_regular.ttf`.
 - **Lottie Animations (`res/raw/`):** Add `lottie_splash.json`, `lottie_onboard_1.json` through `lottie_onboard_4.json`, `lottie_success.json`, and `lottie_empty.json`.
-- **Help Content (`res/raw/`):** Add `help_data.json` for the searchable help center.
+- **Help Content (`res/raw/help_content`):** A JSON file defining the FAQ sections and topics.
 - **Configuration:** Ensure `app/google-services.json` is present.
 
 ---
@@ -56,24 +63,23 @@ Manual steps required for a fresh build:
 ### Package Structure
 ```text
 com.kirubas.pay4me/
-├── Pay4MeApplication.java   # App initialization, Firebase/Cloudinary config
+├── Pay4MeApplication.java   # App initialization, Notification Channel registration
 ├── core/                    # Shared logic
-│   ├── base/                # BaseActivity, BaseFragment, BaseViewModel
+│   ├── base/                # BaseActivity, BaseFragment (Safe UI handling)
 │   ├── constants/           # AppConstants, NotificationConstants
-│   ├── session/             # SessionManager (EncryptedSharedPreferences)
-│   └── utils/               # Validation, QR, Image, Date utils
+│   ├── session/             # SessionManager (Session persistence)
+│   └── utils/               # Validation, QR, Image, Date utils (Calendar-based)
 ├── data/                    # Data Layer
-│   ├── model/               # POJO models (User, Request, Message)
-│   └── repository/          # Firestore/RTDB logic
+│   ├── model/               # POJO models (User, PaymentRequest, ChatMessage)
+│   └── repository/          # Firestore/RTDB logic (Caching in UserRepository)
 ├── ui/                      # Presentation Layer (MVVM)
-│   ├── auth/                # Login, Register, Forgot Password
-│   ├── main/                # Home, Dashboard
-│   ├── friends/             # QR pairing, Friends list
-│   ├── requests/            # Payment request flows
-│   ├── chat/                # Real-time chat inside requests
-│   ├── profile/             # Profile management, Account deletion
+│   ├── auth/                # Login, Register (+91 preset), Forgot Password
+│   ├── main/                # Home, External Intent Handling
+│   ├── friends/             # QR pairing, Friends list (Live Presence)
+│   ├── requestdetail/       # Private Chat, Typing Indicators, Image Sharing
+│   ├── payments/            # Received requests management
 │   └── help/                # In-app FAQ and support documentation
-├── service/                 # FCM Messaging Service
+├── service/                 # Background & Messaging Services
 └── worker/                  # WorkManager for request expiry
 ```
 
@@ -81,21 +87,18 @@ com.kirubas.pay4me/
 - **Firebase:** Auth, Firestore, RTDB, Messaging, Analytics, Crashlytics.
 - **Navigation Component:** Single Activity architecture.
 - **ViewBinding:** Type-safe layout access.
-- **Cloudinary:** Image management.
-- **Glide:** Image loading.
+- **Cloudinary:** Image management and unsigned uploads.
+- **Glide:** Image loading with thumbnail optimizations.
 - **ZXing:** QR code generation and scanning.
 - **Timber:** Enhanced logging.
-- **Lottie:** Vector animations.
 
 ---
 
 ## Build & Release
 1. **Gradle Sync:** Ensure all dependencies are resolved.
-2. **Lint:** Run `./gradlew lint` to check for issues.
-3. **ProGuard:** Enabled in release builds to obfuscate and shrink APK.
-4. **Keystore:** Ensure you have the `release-keystore.jks` and matching credentials in `local.properties` for signed builds.
+2. **Keystore:** Ensure you have the `pay4me-keystore.jks` for signed builds.
 
 ## Free Tier Limitations
 - **Phone Auth:** 10 SMS/day (Firebase Spark Plan).
 - **Cloudinary:** 25GB storage/month (Free Tier).
-- **Expiry Logic:** Handled by a combination of Client-side WorkManager and Server-side Security Rules (since no Cloud Functions are used in the free tier).
+- **Expiry Logic:** Handled via Client-side WorkManager and Server-side Security Rules.
