@@ -23,7 +23,7 @@
 - **Flexible Navigation:** No more forced interactions. Leave any request page at any time using standard navigation or the "Leave without responding" option.
 - **Help & Support Center:** Built-in searchable FAQ guide covering pairing, payments, and anti-fraud features.
 - **Direct Developer Support:** Contact the developer for bugs or technical concerns via **WhatsApp (+91 9092041238)** or **Email (kirubas102@gmail.com)**.
-- **Security Hardening (v1.2.0):** 
+- **Security Hardening (v1.1.3):** 
   - **App Lock Integrity:** Prevents lock-screen bypass via notifications or shortcuts.
   - **Ownership Validation:** Strict server-side checks ensure only participants can view request details.
   - **Self-Healing Sessions:** Automatically restores sessions after biometric changes or storage resets.
