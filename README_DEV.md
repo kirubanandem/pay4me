@@ -3,7 +3,7 @@
 Welcome to the **Pay4Me** developer guide. This document contains technical setup instructions, architecture overview, and project structure details.
 
 ## Project Overview
-- **Version:** v1.2.0
+- **Version:** v1.1.7
 - **Package:** `com.kirubas.pay4me`
 - **Language:** Java (Android)
 - **Min SDK:** 24 (Android 7.0)
@@ -11,10 +11,11 @@ Welcome to the **Pay4Me** developer guide. This document contains technical setu
 - **Architecture:** MVVM (Model-View-ViewModel) + Repository Pattern
 - **Threading:** ViewModel with LiveData, WorkManager for background tasks.
 - **Security Features:** Device metadata tracking, Mock location detection, Biometric/Credential authentication, Secure session self-healing.
+- **Stability Fixes (v1.1.7):** Optimized LiveData observer management in `MainActivity` to prevent race conditions and duplicate message broadcasts during external intent handling.
 - **API Standards:** Intent handling and Back navigation updated to modern Android 14 requirements (OnBackPressedDispatcher, type-safe getParcelableExtra).
-- **Trust-Based Tracking:** UI-level warnings implemented for "Mark as Paid" and "Confirm Receipt" actions to minimize coordination errors.
-- **Notifications:** Integrated FCM for background and specialized localized system alerts for foreground events.
-- **Developer Support:** WhatsApp (+91 9092041238), Email (kirubas102@gmail.com).
+- **Trust-Based Tracking:** UI-level warnings implemented for "Mark as Paid" and "Confirm Receipt" actions. **New:** Historical contact snapshots record verified numbers during transactions.
+- **Notifications:** Integrated FCM for background and specialized localized system alerts for foreground events. Includes a dedicated **Notification Center** for alert history.
+- **Developer Support:** WhatsApp (+91 9092041238), Email (kirubas102@gmail.com). GitHub: [kirubanandem](https://github.com/kirubanandem)
 
 ---
 
@@ -35,8 +36,8 @@ The app relies on Firebase for almost all backend functionality.
 ### 2. High-Priority Push Alerts
 The app uses specialized notification channels for immediate attention:
 1. **Notification Channels:** Channels like `pay4me_urgent` and `pay4me_requests` are created with `IMPORTANCE_HIGH`.
-2. **Foreground/Minimized:** Handled by `NotificationListenerService`. It uses a persistent foreground notification with a `PendingIntent` to allow users to tap and open the app instantly.
-3. **True Background:** Handled by `Pay4MeMessagingService` (FCM).
+2. **Foreground/Minimized:** Handled by `NotificationListenerService`. It uses a persistent foreground notification. For Android 14+, it is swipeable; for older versions, it includes a "Stop" button.
+3. **Notification History:** Handled by `NotificationRepository`, allowing users to review delivered alerts later.
 
 ### 3. External Image Sharing
 The app supports catching images shared from other apps (like UPI transaction receipts):
@@ -78,6 +79,7 @@ com.kirubas.pay4me/
 │   ├── friends/             # QR pairing, Friends list (Live Presence)
 │   ├── requestdetail/       # Private Chat, Typing Indicators, Image Sharing
 │   ├── payments/            # Received requests management
+│   ├── notifications/       # Dedicated notification history & management
 │   └── help/                # In-app FAQ and support documentation
 ├── service/                 # Background & Messaging Services
 └── worker/                  # WorkManager for request expiry
