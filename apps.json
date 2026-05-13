@@ -2,14 +2,14 @@
       {
         "title": "Pay4Me",
         "iconUrl": "https://github.com/kirubanandem/pay4me/blob/996ff3191b5cb7fca6a208603213c743cfec16f3/logo.png",
-        "downloadUrl": "https://github.com/kirubanandem/pay4me/raw/refs/heads/main/Pay4Me-V-1_2_7.apk",
+        "downloadUrl": "https://github.com/kirubanandem/pay4me/raw/refs/heads/main/Pay4Me-V-1_2_9.apk",
         "description": "Simplified shared payments and expense tracking.",
         "packageName": "com.kirubas.pay4me"
       },
       {
         "title": "Pay4Me-Test",
         "iconUrl": "https://github.com/kirubanandem/pay4me/blob/996ff3191b5cb7fca6a208603213c743cfec16f3/logo.png",
-        "downloadUrl": "https://github.com/kirubanandem/pay4me/raw/refs/heads/main/Pay4Me-V-1_2_7.apk",
+        "downloadUrl": "https://github.com/kirubanandem/pay4me/raw/refs/heads/main/Pay4Me-V-1_2_9.apk",
         "description": "Simplified shared payments and expense tracking.",
         "packageName": "com.kirubas.pay4me"
       }
