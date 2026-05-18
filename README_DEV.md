@@ -3,15 +3,34 @@
 Welcome to the **Pay4Me** developer guide. This document contains technical setup instructions, architecture overview, and project structure details.
 
 ## Project Overview
-- **Version:** v1.1.7
+- **Version:** v1.2.7
 - **Package:** `com.kirubas.pay4me`
-- **Language:** Java (Android)
+- **Language:** Java (Android 17)
 - **Min SDK:** 24 (Android 7.0)
 - **Target SDK:** 34 (Android 14)
 - **Architecture:** MVVM (Model-View-ViewModel) + Repository Pattern
 - **Threading:** ViewModel with LiveData, WorkManager for background tasks.
 - **Security Features:** Device metadata tracking, Mock location detection, Biometric/Credential authentication, Secure session self-healing.
-- **Stability Fixes (v1.1.7):** Optimized LiveData observer management in `MainActivity` to prevent race conditions and duplicate message broadcasts during external intent handling.
+- **Stability & Security Fixes (v1.2.7):**
+  - **Splash Update Check:** Integrated `UpdateManager` into `SplashActivity` with callbacks, ensuring critical updates are identified before user session starts.
+  - **Silent Listener Service:** Set `NotificationListenerService` importance to `MIN` and renamed notification to "System Sync" to comply with "unobtrusive background" requirements.
+  - **Crashlytics Reporting:** Added `FirebaseCrashlytics.recordException` for all OTP lifecycle events (Send, Link, Update) and Firestore transaction failures.
+  - **Share Logic Refactor:** Updated `MainActivity` image sharing to support explicit target collection selection (`requests` vs `pairs`).
+  - **Branding Sync:** Migrated primary color to `#38B6FF` and updated `ic_launcher` to adaptive vector-based logo.
+- **Stability & Security Fixes (v1.2.4):**
+  - **Phone Linking:** Improved verification logic to support updating existing linked phone providers using `updatePhoneNumber`.
+  - **Firestore Sync:** Added explicit ID token refresh after linking to prevent "Failed to save" errors in Firestore.
+  - **UI Polish:** Resolved layout constraints in the Profile verification banner to ensure the "Verify Now" button is legible.
+  - **App Lock Polish:** Prevented biometric prompts from appearing during or immediately after logout by adding Firebase auth state checks to `MainActivity` lifecycle methods.
+- **Stability & Security Fixes (v1.2.1):** 
+  - **Handshake Integrity:** Hardened `pairingTokens` rules to prevent session snatching. Improved `AddFriendViewModel` to reuse existing `pairId` when re-pairing with the same user, preserving chat history.
+  - **Transaction Immutability:** Updated Firestore rules to make `amount` and `upiId` immutable after request creation.
+  - **App Lock Resume:** Overhauled `MainActivity.onPause` to reset authentication state, ensuring biometric re-auth is required on app resume.
+  - **Deleted Account Guard:** Implemented login-time check for `status: "deleted"` profiles.
+  - **Firestore Permissions:** Restricted `list` access on sensitive collections (`phoneIndex`, `pairingTokens`) to prevent unauthorized discovery.
+- **Stability Fixes (v1.2.0):** 
+  - **Observer Lifecycle Fix:** Overhauled `AddFriendViewModel` with proper observer removal and explicit `LOADING` state handling, resolving race conditions that led to "Profile Load Error" during pairing.
+  - **Location Refactor:** Migrated from legacy `LocationManager` to `FusedLocationProviderClient`.
 - **API Standards:** Intent handling and Back navigation updated to modern Android 14 requirements (OnBackPressedDispatcher, type-safe getParcelableExtra).
 - **Trust-Based Tracking:** UI-level warnings implemented for "Mark as Paid" and "Confirm Receipt" actions. **New:** Historical contact snapshots record verified numbers during transactions.
 - **Notifications:** Integrated FCM for background and specialized localized system alerts for foreground events. Includes a dedicated **Notification Center** for alert history.
@@ -36,7 +55,7 @@ The app relies on Firebase for almost all backend functionality.
 ### 2. High-Priority Push Alerts
 The app uses specialized notification channels for immediate attention:
 1. **Notification Channels:** Channels like `pay4me_urgent` and `pay4me_requests` are created with `IMPORTANCE_HIGH`.
-2. **Foreground/Minimized:** Handled by `NotificationListenerService`. It uses a persistent foreground notification. For Android 14+, it is swipeable; for older versions, it includes a "Stop" button.
+2. **Foreground/Minimized:** Handled by `NotificationListenerService`. It uses a silent foreground notification (`IMPORTANCE_MIN`) labeled as "System Sync" to maintain Firestore listeners without distracting the user.
 3. **Notification History:** Handled by `NotificationRepository`, allowing users to review delivered alerts later.
 
 ### 3. External Image Sharing
@@ -67,21 +86,32 @@ com.kirubas.pay4me/
 ├── Pay4MeApplication.java   # App initialization, Notification Channel registration
 ├── core/                    # Shared logic
 │   ├── base/                # BaseActivity, BaseFragment (Safe UI handling)
-│   ├── constants/           # AppConstants, NotificationConstants
+│   ├── constants/           # AppConstants, FirestoreConstants
 │   ├── session/             # SessionManager (Session persistence)
-│   └── utils/               # Validation, QR, Image, Date utils (Calendar-based)
+│   └── utils/               # Validation, QR, Image, Date utils
 ├── data/                    # Data Layer
+│   ├── local/               # Local persistence (EncryptedSharedPreferences)
 │   ├── model/               # POJO models (User, PaymentRequest, ChatMessage)
-│   └── repository/          # Firestore/RTDB logic (Caching in UserRepository)
+│   └── repository/          # Firestore/RTDB/Notification repositories
 ├── ui/                      # Presentation Layer (MVVM)
-│   ├── auth/                # Login, Register (+91 preset), Forgot Password
-│   ├── main/                # Home, External Intent Handling
+│   ├── auth/                # Login, Register, Forgot Password
+│   ├── main/                # Dashboard Container, External Intent Handling
+│   ├── home/                # Main dashboard content
 │   ├── friends/             # QR pairing, Friends list (Live Presence)
-│   ├── requestdetail/       # Private Chat, Typing Indicators, Image Sharing
-│   ├── payments/            # Received requests management
-│   ├── notifications/       # Dedicated notification history & management
-│   └── help/                # In-app FAQ and support documentation
-├── service/                 # Background & Messaging Services
+│   ├── profile/             # Profile view, Edit Profile, Phone Verification
+│   ├── requests/            # Sent payment requests
+│   ├── payments/            # Received payment requests
+│   ├── requestdetail/       # Private Chat, Image Sharing, Request actions
+│   ├── scan/                # UPI QR Scanning logic
+│   ├── requestmoney/        # Direct request creation
+│   ├── notifications/       # Notification History Center
+│   ├── settings/            # App preferences & Security settings
+│   ├── help/                # In-app FAQ & Support
+│   ├── developerstore/      # App Store page for other developer projects
+│   ├── common/              # Fullscreen images, cropping
+│   ├── splash/              # Animated entry screen
+│   └── onboarding/          # Feature introduction slides
+├── service/                 # FCM Messaging & Notification Listener
 └── worker/                  # WorkManager for request expiry
 ```
 

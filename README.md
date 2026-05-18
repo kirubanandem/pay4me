@@ -2,9 +2,9 @@
 
 **Pay4Me** is a secure, real-time Android application designed to simplify shared payments and peer-to-peer transaction coordination using UPI QR codes.
 
-[![Platform](https://img.shields.io/badge/platform-Android-green.svg)](https://developer.android.com/about/versions/14)
+[![Platform](https://img.shields.io/badge/platform-Android-blue.svg)](https://developer.android.com/about/versions/14)
 [![Language](https://img.shields.io/badge/language-Java-orange.svg)](https://www.java.com/)
-[![Version](https://img.shields.io/badge/version-1.1.7-blue.svg)](https://github.com/kirubanandem/pay4me/releases/latest)
+[![Version](https://img.shields.io/badge/version-1.2.7-skybue.svg)](https://github.com/kirubanandem/pay4me/releases/latest)
 
 ## 🚀 Key Features
 
@@ -17,21 +17,36 @@
   - Private chat room for every payment request.
   - **General Chat:** Start a conversation with any friend directly from their profile.
   - **Typing Indicators:** See when your friend is actively composing a message.
-  - **Image Sharing:** Send photos directly in chat or **Share from other apps** (like UPI payment receipts) instantly into any active conversation.
+  - **Image Sharing:** Send photos directly in chat or **Share from other apps** (like UPI payment receipts) instantly into any active conversation. Target selection allows choosing between specific transactions or general friend chat.
 - **Two-Sided Confirmation:** Transparent payment tracking where both the requester and the payer must confirm the transaction. Verification warnings ensure users check bank balances before confirming.
+- **Developer App Store:** Explore and download other applications by the developer directly from within the app. Fetches dynamic app lists from a remote repository.
+- **Easy Sharing:** Built-in "Share App" feature to invite friends via WhatsApp, Mail, or even offline via Bluetooth (direct APK file sharing).
 - **Smart Notifications & Center:**
   - **Urgent Priority Alerts:** Loud, high-visibility notifications for new requests and chat messages that can bypass "Do Not Disturb".
   - **Notifications Center:** A dedicated history screen to review all past alerts, mark as read, or swipe to delete.
-  - **Background Service:** Ensures instant delivery even when the app is minimized. Swipeable notification on newer Android versions with a "Stop" control for older ones.
+  - **Silent Background Service:** "System Sync" service ensures instant delivery without cluttering your notification tray.
 - **Privacy Controls:** 
   - **Presence Toggle:** Choose whether friends can see your live "Online" status. Turning it off hides your status completely from everyone.
 - **Help & Support Center:** Built-in searchable FAQ guide covering pairing, payments, and anti-fraud features.
 - **Direct Developer Support:** Contact the developer via **WhatsApp (+91 9092041238)** or **Email (kirubas102@gmail.com)**.
-- **Security Hardening (v1.1.7):**
-  - **Stability:** Fixed "double image" upload bug when sharing receipts from external apps.
-  - **App Lock Integrity:** Prevents lock-screen bypass via notifications or shortcuts.
-  - **Ownership Validation:** Strict server-side checks ensure only participants can view request details.
-  - **Self-Healing Sessions:** Automatically restores sessions after biometric changes or storage resets.
+- **Security Hardening & Polish (v1.2.7):**
+  - **New Branding:** Rebranded to a modern Sky Blue theme with a refreshed "Envelope + Rupee" logo for better visibility.
+  - **Instant Update Checks:** Moved update verification to the Splash screen to ensure users are always running the latest version before they even log in.
+  - **Silent Background Ops:** Optimized the background listener to run silently as a "System Sync" process, removing tray clutter while maintaining real-time speed.
+  - **Crashlytics Integration:** Implemented non-fatal error reporting for OTP failures and Firestore permission issues to ensure rapid bug fixing.
+  - **Targeted Sharing:** Fixed image sharing logic to correctly distinguish between Transaction Chats and General Chats.
+  - **Phone Linking Self-Healing:** Added support for updating linked phone numbers even if a provider is already linked to the Firebase user.
+  - **Verification Reliability:** Hardened the verification flow with forced token refreshes and improved error handling for "credential-already-in-use".
+  - **UI Polishing:** Fixed layout issues in profile banners where the "Verify Now" button text was clipped or invisible.
+  - **Handshake Integrity:** Hardened physical pairing handshake in Firestore rules to prevent session hijacking.
+  - **Transaction Protection:** Made core payment fields (Amount, UPI ID) immutable in Firestore rules to prevent post-request tampering.
+  - **Role Enforcement:** Enforced status transitions in security rules—only the Payer can mark as "Paid", and only the Requester can "Confirm".
+  - **App Lock Hardening:** Fixed a bypass where the app stayed unlocked when resumed from the background; now re-prompts for biometric on every resume if App Lock is enabled.
+  - **Deleted Account Protection:** Prevents users from logging into accounts marked as "deleted".
+  - **Privacy:** Disabled list permissions on phone index and pairing tokens to prevent data scraping.
+  - **Screenshot Protection:** Disabled screenshots and screen recording on sensitive payment and pairing screens.
+  - **Logical Handshake Improvements:** Added detailed error reporting for handshake failures and fixed "Failed to update pairing session" errors by improving observer management.
+  - **Persistent Friendships:** Re-pairing with the same person now reuses the existing Pair ID, preserving chat history and continuing the relationship instead of creating duplicates.
 - **Anti-Fraud Protections:** 
   - **Screen Security:** Screenshots and screen recordings are disabled on sensitive payment and pairing screens.
   - **Device Fingerprinting:** Records device model and ID for every request to detect unauthorized account usage.
